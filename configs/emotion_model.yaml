@@ -1,0 +1,59 @@
+project:
+  name: speech_emotion_recognition
+  task: emotion_classification
+
+paths:
+  data_dir: wav
+  manifest_csv: null
+  output_dir: runs/emotion_model
+  model_dir: models
+  model_file: emotion_model.keras
+  scaler_file: scaler.pkl
+  label_encoder_file: label_encoder.pkl
+  splits_dir: runs/emotion_model/splits
+
+data:
+  audio_extensions: [".wav"]
+  label_source: emodb_filename
+  path_column: path
+  label_column: label
+  test_size: 0.10
+  val_size: 0.10
+  stratify: true
+
+audio:
+  sample_rate: 22050
+  duration: 2.5
+  offset: 0.6
+
+features:
+  fixed_length: 5120
+  frame_length: 2048
+  hop_length: 512
+  n_mfcc: 20
+
+augmentation:
+  enabled: true
+  include_original: true
+  methods: ["noise", "stretch", "pitch_shift", "pitch_shift_noise"]
+  noise_rate: 0.05
+  stretch_rate: 0.90
+  pitch_steps: 0.70
+
+model:
+  conv_filters: [512, 256, 128]
+  kernel_size: 7
+  dropout: 0.30
+  lstm_units: 128
+  dense_units: [128, 64, 32]
+  learning_rate: 0.001
+
+training:
+  random_seed: 42
+  batch_size: 32
+  epochs: 100
+  early_stopping_patience: 10
+  reduce_lr_patience: 5
+  reduce_lr_factor: 0.2
+  min_learning_rate: 0.00001
+  use_class_weights: true
